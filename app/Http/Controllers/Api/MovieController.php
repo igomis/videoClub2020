@@ -1,20 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\MoviePost;
+use App\Http\Controllers\Controller;
 use App\Models\Movie;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\MoviePost;
 
 class MovieController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum',['except' => ['index', 'show']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -22,18 +16,8 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $movies = Movie::paginate(8);
-        return view('index',compact('movies'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('create');
+        $movies = Movie::get();
+        return $movies;
     }
 
     /**
@@ -42,7 +26,7 @@ class MovieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(MoviePost $request)
+    public function store(Request $request)
     {
         $movie = new Movie();
         $movie->title = $request->title;
@@ -51,41 +35,29 @@ class MovieController extends Controller
         $movie->poster = $request->poster;
         $movie->synopsis = $request->synopsis;
         $movie->save();
-        return redirect(route('movie.index'));
+        return response()->json($movie, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Movie  $movie
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Movie $movie)
     {
-        $pelicula = Movie::find($id);
-        return view('show',compact('pelicula'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $pelicula = Movie::find($id);
-        return view('edit',compact('pelicula'));
+        return $movie;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Movie  $movie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+     public function update(MoviePost $request, $id)
     {
         $movie = Movie::findOrFail($id);
         $movie->title = $request->title;
@@ -94,17 +66,18 @@ class MovieController extends Controller
         $movie->poster = $request->poster;
         $movie->synopsis = $request->synopsis;
         $movie->save();
-        return redirect(route('movie.show',$id));
+        return response()->json($movie, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Movie  $movie
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Movie $movie)
     {
-        //
+        $movie->delete();
+        return response()->json(null, 204);
     }
 }

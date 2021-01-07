@@ -10,12 +10,12 @@
                     </h3>
                 </div>
                 <div class="panel-body" style="padding:30px">
-                    <form method='POST'>
+                    <form method='POST' action="{{route('movie.update',$pelicula->id)}}">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
                             <label for="title">Título</label>
-                            <input type="text" name="title" id="title" class="form-control">
+                            <input type="text" name="title" id="title" class="form-control" value="{{$pelicula->title}}">
                         </div>
                         <div class="form-group">
                             <label for='year'>Any:</label>
@@ -23,16 +23,16 @@
                         </div>
                         <div class="form-group">
                             <label for='director'>Director:</label>
-                            <input type='text' name='director' />
+                            <input type='text' name='director' value="{{$pelicula->director}}"/>
                         </div>
                         <div class="form-group">
                             <label for='poster'>Poster:</label>
-                            <input type='url' name='poster' />
+                            <input type='url' name='poster' value="{{$pelicula->poster}}" />
                         </div>
 
                         <div class="form-group">
                             <label for="synopsis">Resumen</label>
-                            <textarea name="synopsis" id="synopsis" class="form-control" rows="3"></textarea>
+                            <textarea name="synopsis" id="synopsis" class="form-control" rows="3">{{$pelicula->synopsis}}</textarea>
                         </div>
                         <div class="form-group text-center">
                             <button type="submit" class="btn btn-primary" style="padding:8px 100px;margin-top:25px;">
