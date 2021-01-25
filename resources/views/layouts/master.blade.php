@@ -14,5 +14,7 @@
 @include('partials.navbar')
 <div id='app' class="container">
     @yield('content')
+    {!! Alert::render() !!}
 </div>
+<script src="/js/app.js" />
 </html>

@@ -10,53 +10,14 @@
                     </h3>
                 </div>
                 <div class="panel-body" style="padding:30px">
-                    <form method='POST' action="{{route('movie.store')}}">
-                        @csrf
-                        <div class="form-group">
-                            <label for="title">Título</label>
-                            <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
-                            @if ($errors->has('title'))
-                                <div class="text-danger">
-                                    {{ $errors->first('title') }}
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="form-group">
-                            <label for='year'>Any:</label>
-                            <input type='number' name='year' value="{{ old('year') }} />
-                            @if ($errors->has('year'))
-                                <div class="text-danger">
-                                    {{ $errors->first('year') }}
-                                </div>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for='director'>Director:</label>
-                            <input type='text' name='director' value="{{ old('director') }}/>
-                            @if ($errors->has('director'))
-                                <div class="text-danger">
-                                    {{ $errors->first('director') }}
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="form-group">
-                            <label for='poster'>Poster:</label>
-                            <input type='url' name='poster' />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="synopsis">Resumen</label>
-                            <textarea name="synopsis" id="synopsis" class="form-control" rows="3"></textarea>
-                        </div>
-
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary" style="padding:8px 100px;margin-top:25px;">
-                                Afegir pel.lícula
-                            </button>
-                        </div>
-                    </form>
+                    {!! Form::model(new App\Models\Movie(),['url' => 'movie','class'=>'form-horizontal form-label-left','enctype'=>"multipart/form-data"]) !!}
+                    {!! Field::text('title') !!}
+                    {!! Field::text('year') !!}
+                    {!! Field::text('director') !!}
+                    {!! Field::text('poster') !!}
+                    {!! Field::textarea('synopsis') !!}
+                    {!! Form::submit('Enviar',['class'=>'btn btn-success','id'=>'submit']) !!}
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>

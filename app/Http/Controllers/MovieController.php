@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MoviePost;
 use App\Models\Movie;
 use Illuminate\Http\Request;
+use Styde\Html\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 
 class MovieController extends Controller
@@ -12,7 +14,7 @@ class MovieController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:sanctum',['except' => ['index', 'show']]);
+        $this->middleware('auth',['except' => ['index', 'show']]);
     }
 
     /**
@@ -45,11 +47,7 @@ class MovieController extends Controller
     public function store(MoviePost $request)
     {
         $movie = new Movie();
-        $movie->title = $request->title;
-        $movie->year = $request->year;
-        $movie->director = $request->director;
-        $movie->poster = $request->poster;
-        $movie->synopsis = $request->synopsis;
+        $movie->fill($request->toArray());
         $movie->save();
         return redirect(route('movie.index'));
     }
@@ -88,12 +86,9 @@ class MovieController extends Controller
     public function update(Request $request, $id)
     {
         $movie = Movie::findOrFail($id);
-        $movie->title = $request->title;
-        $movie->year = $request->year;
-        $movie->director = $request->director;
-        $movie->poster = $request->poster;
-        $movie->synopsis = $request->synopsis;
+        $movie->fill($request->toArray());
         $movie->save();
+        Alert::success("S'ha guardat la pel.licula");
         return redirect(route('movie.show',$id));
     }
 
@@ -105,6 +100,28 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $movie = Movie::findOrFail($id);
+        $movie->delete();
+        return redirect(route('movie.index'));
+    }
+
+    public function rent($id)
+    {
+        $movie = Movie::findOrFail($id);
+        $movie->rented = 1;
+        $movie->save();
+        $movie->users()->attach(Auth::id(), ['dateRent' => date('Y/m/d')]);
+        return redirect(route('movie.show',$movie->id));
+
+
+
+    }
+    public function return($id)
+    {
+        $movie = Movie::findOrFail($id);
+        $movie->rented = 0;
+        $movie->save();
+        $movie->users()->updateExistingPivot(Auth::id(), ['dateReturn' =>date('Y/m/d')]);
+        return redirect(route('movie.show',$movie->id));
     }
 }

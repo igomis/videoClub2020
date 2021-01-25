@@ -4,11 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Movie;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Requests\MoviePost;
 
 class MovieController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum',['except' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +32,7 @@ class MovieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MoviePost $request)
     {
         $movie = new Movie();
         $movie->title = $request->title;
@@ -35,7 +41,7 @@ class MovieController extends Controller
         $movie->poster = $request->poster;
         $movie->synopsis = $request->synopsis;
         $movie->save();
-        return response()->json($movie, 201);
+        response()->json($movie, 201);
     }
 
     /**
@@ -46,7 +52,7 @@ class MovieController extends Controller
      */
     public function show(Movie $movie)
     {
-        return $movie;
+        return response()->json($movie, 200);
     }
 
     /**
@@ -80,4 +86,6 @@ class MovieController extends Controller
         $movie->delete();
         return response()->json(null, 204);
     }
+
+
 }

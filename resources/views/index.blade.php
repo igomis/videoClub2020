@@ -1,6 +1,5 @@
 @extends('layouts.master')
 @section('content')
-    <div><a href="{{route('movie.create')}}" class="btn btn-primary">Crear Pel·licula</a></div>
     <div class="row">
         @foreach( $movies as $pelicula )
             <div class="col-xs-6 col-sm-4 col-md-3 text-center">

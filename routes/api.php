@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('movies', Api\MovieController::class);
-Route::post('login', [Api\LoginController::class, 'login']);
+Route::post('login', 'Api\LoginController@login');
 

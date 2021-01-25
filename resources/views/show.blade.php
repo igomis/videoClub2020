@@ -10,14 +10,25 @@
             <h4>{{$pelicula->year}}</h4>
             <p><strong>Resumen: {{$pelicula->synopsis}}</strong></p>
             <p><strong>Estado: </strong>Pel.lícula @if ($pelicula->rented)  Actualment llogada @else disponible @endif</p>
+            @if ($pelicula->Genre)
+                <p><strong>Genero:</strong>{{$pelicula->Genre->title}}</p>
+            @endif
             <p>
                 @if ($pelicula->rented)
-                    <a href='' class="btn btn-info">Tornar Pel.lícula</a>
+                    @if (Auth::user()->rent_movies->contains($pelicula))
+                        <a href='{{route('return',$pelicula->id)}}' class="btn btn-info">Tornar Pel.lícula</a>
+                    @endif
                 @else
-                    <a href='' class="btn btn-danger">Llogar Pel.lícula</a>
+                    <a href='{{route('rent',$pelicula->id)}}' class="btn btn-danger">Llogar Pel.lícula</a>
                 @endif
-                <a href="{{ route('movie.edit',$pelicula->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i>Editar Pel.lícula</a>
-                <a href="{{ route('movie.index') }}" class="btn btn-default">Tornar catàleg</a>
+                @if(auth()->check())
+                    <a href="{{ route('movie.edit',$pelicula->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i>Editar Pel.lícula</a>
+                    <form action="{{route('movie.destroy',$pelicula->id)}}" method="POST" style="display:inline" class="btn btn-danger">
+                        {{ method_field('DELETE') }}
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn btn-danguer" style= "display:inline" > Esborrar Película</button>
+                    </form>
+                @endif
             </p>
         </div>
     </div>
