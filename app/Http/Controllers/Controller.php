@@ -9,8 +9,20 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Info(
- *    title="Your super  ApplicationAPI",
- *    version="1.0.0",
+ *    title="VideoClub ApplicationAPI",
+ *    version="2.0.0",
+ * )
+ */
+
+/**
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     description="Login with email and password to get the authentication token",
+ *     name="Token based Based",
+ *     in="header",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     securityScheme="apiAuth",
  * )
  */
 

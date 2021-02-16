@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Your super  ApplicationAPI",
-        "version": "1.0.0"
+        "title": "VideoClub ApplicationAPI",
+        "version": "2.0.0"
     },
     "paths": {
-        "/login": {
+        "/api/login": {
             "post": {
                 "tags": [
                     "auth"
@@ -20,11 +20,11 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
+                                    "login",
                                     "password"
                                 ],
                                 "properties": {
-                                    "email": {
+                                    "login": {
                                         "type": "string",
                                         "format": "email",
                                         "example": "user1@mail.com"
@@ -33,10 +33,6 @@
                                         "type": "string",
                                         "format": "password",
                                         "example": "PassWord12345"
-                                    },
-                                    "persistent": {
-                                        "type": "boolean",
-                                        "example": "true"
                                     }
                                 },
                                 "type": "object"
@@ -45,7 +41,7 @@
                     }
                 },
                 "responses": {
-                    "422": {
+                    "401": {
                         "description": "Wrong credentials response",
                         "content": {
                             "application/json": {
@@ -53,7 +49,22 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Sorry, wrong email address or password. Please try again"
+                                            "example": "Credenciales no validas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -64,45 +75,197 @@
                 }
             }
         },
-        "/v1/logout": {
-            "post": {
+        "/api/movies": {
+            "get": {
                 "tags": [
-                    "auth"
+                    "Movies"
                 ],
-                "summary": "Logout",
-                "description": "Logout user and invalidate token",
-                "operationId": "authLogout",
+                "summary": "Get list of movies",
+                "description": "Returns list of movies",
+                "operationId": "getMoviesList",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MovieResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Store new movie",
+                "description": "Returns movie data",
+                "operationId": "movieProject",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MoviePost"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Movie"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     },
                     "401": {
-                        "description": "Returns when user is not authenticated",
+                        "description": "Unauthenticated",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "error": {
                                             "type": "string",
-                                            "example": "Not authorized"
+                                            "example": "Usuario no autenticado"
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     }
                 },
                 "security": [
                     {
-                        "bearer": []
+                        "apiAuth": []
                     }
                 ]
+            }
+        },
+        "/api/movies/{id}": {
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get list of movies",
+                "description": "Returns list of movies",
+                "operationId": "getMoviesList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Project id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Movie"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
             }
         }
     },
     "components": {
         "schemas": {
+            "MoviePost": {
+                "title": "Store Movie Request",
+                "description": "Store Movie request body data",
+                "required": [
+                    "title,director,year"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "name",
+                        "description": "Title",
+                        "type": "string",
+                        "example": "Titanic"
+                    },
+                    "year": {
+                        "title": "year",
+                        "description": "Year",
+                        "type": "integer",
+                        "example": "1998"
+                    },
+                    "genre": {
+                        "title": "genre",
+                        "description": "Genre",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "director": {
+                        "title": "director",
+                        "description": "Director",
+                        "type": "string",
+                        "example": "Steven Spilberg"
+                    },
+                    "synopsis": {
+                        "title": "synopsis",
+                        "description": "Synopsis",
+                        "type": "string",
+                        "example": "De que va la pelicula"
+                    },
+                    "poster": {
+                        "title": "poster",
+                        "description": "Poster",
+                        "type": "string",
+                        "example": "adreça del poster"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "MoviePost"
+                }
+            },
+            "MovieResource": {
+                "title": "MovieResource",
+                "description": "Project resource",
+                "properties": {
+                    "data": {
+                        "title": "data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Movie"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "MovieResource"
+                }
+            },
             "BaseModel": {
                 "properties": {
                     "created_at": {
@@ -125,6 +288,45 @@
                     }
                 },
                 "type": "object"
+            },
+            "Movie": {
+                "required": [
+                    "id,title"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "title": {
+                        "description": "User role",
+                        "type": "string",
+                        "readOnly": "true"
+                    },
+                    "year": {
+                        "description": "Year",
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1956"
+                    },
+                    "director": {
+                        "description": "Director",
+                        "type": "string",
+                        "readOnly": "true",
+                        "example": "Copolla"
+                    },
+                    "genre": {
+                        "description": "Genre",
+                        "type": "string",
+                        "readOnly": "true",
+                        "example": "Thriller"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Movie"
+                }
             },
             "User": {
                 "required": [
@@ -181,21 +383,14 @@
                 }
             }
         },
-        "responses": {
-            "200": {
-                "description": "Success",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "user": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
+        "securitySchemes": {
+            "apiAuth": {
+                "type": "http",
+                "description": "Login with email and password to get the authentication token",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },

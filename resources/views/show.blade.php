@@ -22,6 +22,7 @@
                     <a href='{{route('rent',$pelicula->id)}}' class="btn btn-danger">Llogar Pel.lícula</a>
                 @endif
                 @if(auth()->check())
+                    <a href="{{ route('movie.pdf',$pelicula->id) }}"class="btn btn-info"><i class="fa fa-pdf-o"></i>Imprimir Caratula</a>
                     <a href="{{ route('movie.edit',$pelicula->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i>Editar Pel.lícula</a>
                     <form action="{{route('movie.destroy',$pelicula->id)}}" method="POST" style="display:inline" class="btn btn-danger">
                         {{ method_field('DELETE') }}

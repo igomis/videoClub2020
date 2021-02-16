@@ -9,7 +9,7 @@ use App\Models\User;
 
 /**
  * @OA\Post(
- * path="/login",
+ * path="/api/login",
  * summary="Sign in",
  * description="Login by email, password",
  * operationId="authLogin",
@@ -18,50 +18,29 @@ use App\Models\User;
  *    required=true,
  *    description="Pass user credentials",
  *    @OA\JsonContent(
- *       required={"email","password"},
- *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
- *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
- *       @OA\Property(property="persistent", type="boolean", example="true"),
+ *       required={"login","password"},
+ *       @OA\Property(property="login", type="string", format="email", example="user1@mail.com"),
+ *       @OA\Property(property="password", type="string", format="password", example="PassWord12345")
  *    ),
  * ),
  * @OA\Response(
- *    response=422,
+ *    response=401,
  *    description="Wrong credentials response",
  *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+ *       @OA\Property(property="message", type="string", example="Credenciales no validas")
  *        )
  *     )
- * ),
+ * ,
  * @OA\Response(
  *     response=200,
  *     description="Success",
  *     @OA\JsonContent(
- *        @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+ *        @OA\Property(property="token", type="string")
  *     )
  *  )
+ * )
  */
 
-/**
- * @OA\Post(
- * path="/v1/logout",
- * summary="Logout",
- * description="Logout user and invalidate token",
- * operationId="authLogout",
- * tags={"auth"},
- * security={ {"bearer": {} }},
- * @OA\Response(
- *    response=200,
- *    description="Success"
- *     ),
- * @OA\Response(
- *    response=401,
- *    description="Returns when user is not authenticated",
- *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Not authorized"),
- *    )
- * )
- * )
- */
 
 class LoginController extends Controller
 {

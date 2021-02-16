@@ -7,6 +7,7 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use Styde\Html\Facades\Alert;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 
 class MovieController extends Controller
@@ -62,6 +63,13 @@ class MovieController extends Controller
     {
         $pelicula = Movie::find($id);
         return view('show',compact('pelicula'));
+    }
+
+    public function pdf($id)
+    {
+        $pelicula = Movie::find($id);
+        $pdf = PDF::loadView('pdf',compact('pelicula'));
+        return $pdf->download($pelicula->title.'.pdf');
     }
 
     /**

@@ -7,6 +7,9 @@ use App\Models\Movie;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Requests\MoviePost;
+use App\Http\Resources\MovieResource;
+
+
 
 class MovieController extends Controller
 {
@@ -20,10 +23,28 @@ class MovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    /**
+     * @OA\Get(
+     *      path="/api/movies",
+     *      operationId="getMoviesList",
+     *      tags={"Movies"},
+     *      summary="Get list of movies",
+     *      description="Returns list of movies",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/MovieResource")
+     *       ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     *     )
+     */
     public function index()
     {
-        $movies = Movie::get();
-        return $movies;
+
+        return MovieResource::collection(Movie::get());
     }
 
     /**
@@ -31,6 +52,42 @@ class MovieController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     */
+    /**
+     * @OA\Post(
+     *      path="/api/movies",
+     *      operationId="movieProject",
+     *      tags={"Movies"},
+     *      summary="Store new movie",
+     *      description="Returns movie data",
+     *      security={ {"apiAuth": {} }},
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/MoviePost")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Movie")
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request"
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *           @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="error",
+     *                  type="string",
+     *                  example="Usuario no autenticado"))
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     * )
      */
     public function store(MoviePost $request)
     {
@@ -50,10 +107,42 @@ class MovieController extends Controller
      * @param  \App\Models\Movie  $movie
      * @return \Illuminate\Http\Response
      */
+    /**
+     * @OA\Get(
+     *      path="/api/movies/{id}",
+     *      operationId="getMoviesList",
+     *      tags={"Movies"},
+     *      summary="Get list of movies",
+     *      description="Returns list of movies",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Project id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Movie")
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     *     )
+     */
     public function show(Movie $movie)
     {
-        return response()->json($movie, 200);
+        return response()->json(new MovieResource($movie), 200);
     }
+
 
     /**
      * Update the specified resource in storage.

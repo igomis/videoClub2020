@@ -22,7 +22,7 @@ Route::get('logout', 'LoginController@logout')->name('logout')->middleware('auth
 Route::resource('movie',MovieController::class);
 Route::get('movie/{id}/rent','MovieController@rent')->name('rent');
 Route::get('movie/{id}/return','MovieController@return')->name('return');
-
+Route::get('movie/{id}/pdf','MovieController@pdf')->name('movie.pdf');
 Route::resource('genre',GenreController::class);
 /**
 Route::get('catalog', function () { return view('index');});
